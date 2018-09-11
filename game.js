@@ -10,7 +10,7 @@ principalAngle = function(angle) {
 };
 
 Spaceship = function(x, y) {
-  console.log(x, y);
+  // console.log(x, y);
   this.x = x;
   this.y = y;
   this.dx = 0;
@@ -34,10 +34,10 @@ Spaceship = function(x, y) {
   this.update = function(dt) {
     if (this.alive) {
       if (!this.landed) {
-        this.dy += 0.05;
+        this.dy += 0.1;
       } else {
 
-        console.log("landed");
+        // console.log("landed");
       }
       this.x += this.dx; // * dt;
       this.y += this.dy; // * dt;
@@ -45,7 +45,7 @@ Spaceship = function(x, y) {
       this.theta = principalAngle(this.theta);
 
     } else {
-      console.log("mort");
+      // console.log("mort");
     }
   }
 };
@@ -54,7 +54,7 @@ Spaceship = function(x, y) {
 Game = function(w, h) {
   this.w = w;
   this.h = h;
-  this.land = this.h - 48;
+  this.land = 0 - 48;
   this.ship = new Spaceship(Math.random() * w, this.land); //Math.floor(h / 2));
 
   // this.html = new SVGView(this);
@@ -69,13 +69,13 @@ Game = function(w, h) {
     var res;
 
     var test1 = Math.abs(this.ship.y - this.land) < 2; // check altitude
-    var test2 = Math.abs(this.ship.theta) < 10; // check verticality (tol =2°)
-    var test3 = (this.ship.dx ** 2 + this.ship.dy ** 2) < 0.9; // check velocity
+    var test2 = Math.abs(this.ship.theta) < 10; // check verticality (tol =10°)
+    var test3 = (this.ship.dy > 0) && (this.ship.dx ** 2 + this.ship.dy ** 2) < 3; // check velocity
     var test4 = Math.abs(this.ship.dtheta) < 0.1; // check rotational speed
     res = test1 && test2 && test3 && test4;
 
     this.ship.landed = res;
-    console.log(test1, test2, test3, test4);
+    // console.log(test1, test2, test3, test4);
     if (this.ship.landed) {
       this.ship.dx = 0;
       this.ship.dy = 0;
@@ -89,11 +89,11 @@ Game = function(w, h) {
 
     if (this.ship.x < 0) {
       // this.ship.alive = false;
-      this.ship.x += this.w;
+      // this.ship.x += this.w;
       // this.ship.dx *= -1;
     } else if (this.ship.x > this.w) {
       // this.ship.alive = false;
-      this.ship.x -= this.w;
+      // this.ship.x -= this.w;
       // this.ship.dx *= -1;
     }
 
@@ -101,7 +101,7 @@ Game = function(w, h) {
       // this.ship.alive = false;
       // this.ship.y += this.h;
       // this.ship.dy *= -1;
-    } else if (this.ship.y > this.h) {
+    } else if (this.ship.y > this.land + 4) {
       this.ship.alive = false;
       // this.ship.y -= this.h;
       // this.ship.dy *= -1;
