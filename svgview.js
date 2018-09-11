@@ -8,6 +8,10 @@ SVGView = function() {
 
   this.game = new Game(this.w, this.h);
 
+  this.keyBoostOn = false;
+  this.keyLRotateOn = false;
+  this.keyRRotateOn = false;
+
 
   this.last = Date.now();
 
@@ -39,15 +43,26 @@ SVGView.prototype.setView = function() {
 SVGView.prototype.setupInput = function() {
   var svg = this.svg;
   var game = this.game;
+  var thiz = this;
+
+  var switchKeysOff = function() {
+    thiz.keyBoostOn = false;
+    thiz.keyLRotateOn = false;
+    thiz.keyRRotateOn = false;
+  }
 
   document.onkeydown = function(e) {
     switch (e.which) {
       case 32: // space
         console.log("space");
+        switchKeysOff();
+        thiz.keyBoostOn = true;
         game.spaceAction();
         break;
       case 37: // left arrow
         console.log("left");
+        switchKeysOff();
+        thiz.keyLRotateOn = true;
         game.leftAction();
         break;
         // case 38: // up arrow
@@ -55,12 +70,18 @@ SVGView.prototype.setupInput = function() {
         //   break;
       case 39: // right arrow
         console.log("right");
+        switchKeysOff();
+        thiz.keyRRotateOn = true;
         game.rightAction();
         break;
         // case 40: // down arrow
         //   break;
     }
   };
+
+  document.onkeyup = function(e) {
+    switchKeysOff();
+  }
 
   window.onload = window.onresize = function() {
     // console.log(window.innerHeight);
@@ -98,31 +119,43 @@ SVGView.prototype.draw = function() {
   var game = this.game;
   // Spaceship
   var ship = document.getElementById("ship");
+  var thiz = this;
 
   if (ship == null) {
     ship = document.createElementNS(svgNS, 'g');
     ship.setAttributeNS(null, "id", "ship");
-    ship.setAttributeNS(null, 'fill', '#FF0000');
-    var rect1 = document.createElementNS(svgNS, 'rect');
-    rect1.setAttributeNS(null, "x", 0);
-    rect1.setAttributeNS(null, "y", -5);
-    rect1.setAttributeNS(null, "width", 20);
-    rect1.setAttributeNS(null, "height", 10);
-    ship.appendChild(rect1);
-
-    var rect2 = document.createElementNS(svgNS, 'rect');
-    rect2.setAttributeNS(null, "x", -10);
-    rect2.setAttributeNS(null, "y", -10);
-    rect2.setAttributeNS(null, "width", 10);
-    rect2.setAttributeNS(null, "height", 20);
-    ship.appendChild(rect2);
 
     this.svg.appendChild(ship);
   }
-  let xc = game.ship.x + 15;
-  let yc = game.ship.y + 5;
 
-  let transformation = "translate(" + game.ship.x + "," + game.ship.y + ")" +
+  var vis = document.getElementById("shipView");
+
+  if (vis == null) {
+    vis = document.createElementNS(svgNS, 'image');
+    vis.setAttributeNS(null, "id", "shipView");
+    vis.setAttributeNS(null, "x", -353 / 2);
+    vis.setAttributeNS(null, "y", -873 / 2);
+    vis.setAttributeNS(null, "width", 353);
+    vis.setAttributeNS(null, "height", 873);
+    vis.setAttributeNS(null, "transform", "scale(0.15), rotate(90)");
+    console.log("here");
+    ship.appendChild(vis);
+  }
+
+  var attr = "xlink:href";
+  var attrNS = "http://www.w3.org/1999/xlink"
+  if (thiz.keyBoostOn) {
+    console.log('hlla');
+    vis.setAttributeNS(attrNS, attr, 'spaceship_B.png');
+  } else if (thiz.keyLRotateOn) {
+    vis.setAttributeNS(attrNS, attr, 'spaceship_L.png');
+  } else if (this.keyRRotateOn) {
+    vis.setAttributeNS(attrNS, attr, 'spaceship_R.png');
+  } else {
+    vis.setAttributeNS(attrNS, attr, 'spaceship.png');
+  }
+  console.log('lala');
+  let transformation = "translate(" + game.ship.x + "," + game.ship.y + "), " +
     "rotate(" + game.ship.theta + ")"; //"," + game.ship.x + "," + game.ship.y + ")";
 
   ship.setAttributeNS(null, 'transform', transformation);

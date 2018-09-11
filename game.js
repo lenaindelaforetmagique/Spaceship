@@ -19,6 +19,7 @@ Spaceship = function(x, y) {
   }
 
   this.update = function(dt) {
+    this.dy += 0.05;
     this.x += this.dx; // * dt;
     this.y += this.dy; // * dt;
     this.theta += this.dtheta; // * dt;
@@ -37,19 +38,19 @@ Game = function(w, h) {
   this.update = function(dt) {
     this.ship.update(dt);
     if (this.ship.x < 0) {
-      // this.ship.x += this.w;
-      this.ship.dx *= -1;
+      this.ship.x += this.w;
+      // this.ship.dx *= -1;
     } else if (this.ship.x > this.w) {
-      // this.ship.x -= this.w;
-      this.ship.dx *= -1;
+      this.ship.x -= this.w;
+      // this.ship.dx *= -1;
     }
 
     if (this.ship.y < 0) {
-      // this.ship.y += this.h;
-      this.ship.dy *= -1;
+      this.ship.y += this.h;
+      // this.ship.dy *= -1;
     } else if (this.ship.y > this.h) {
-      // this.ship.y -= this.h;
-      this.ship.dy *= -1;
+      this.ship.y -= this.h;
+      // this.ship.dy *= -1;
     }
 
     // this.ship.x = this.ship.x % this.w;
