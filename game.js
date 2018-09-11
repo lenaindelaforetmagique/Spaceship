@@ -55,7 +55,7 @@ Game = function(w, h) {
   this.w = w;
   this.h = h;
   this.land = this.h - 48;
-  this.ship = new Spaceship(Math.floor(w / 2), Math.floor(h / 2));
+  this.ship = new Spaceship(Math.random() * w, this.land); //Math.floor(h / 2));
 
   // this.html = new SVGView(this);
 
