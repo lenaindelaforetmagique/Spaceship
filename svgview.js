@@ -26,7 +26,7 @@ SVGView.prototype.setView = function() {
   this.svg.setAttributeNS(null, "viewBox", "0 0 " + this.w + " " + this.h);
 
   // svg.setAttributeNS(null, "width", "100%");
-  this.svg.setAttributeNS(null, "height", window.innerHeight);
+  this.svg.setAttributeNS(null, "height", this.h); //window.innerHeight);
   this.svg.setAttributeNS(null, "id", "space");
 
   var rect = document.createElementNS(svgNS, 'rect');
@@ -54,13 +54,11 @@ SVGView.prototype.setupInput = function() {
   document.onkeydown = function(e) {
     switch (e.which) {
       case 32: // space
-        console.log("space");
         switchKeysOff();
         thiz.keyBoostOn = true;
         game.spaceAction();
         break;
       case 37: // left arrow
-        console.log("left");
         switchKeysOff();
         thiz.keyLRotateOn = true;
         game.leftAction();
@@ -69,7 +67,6 @@ SVGView.prototype.setupInput = function() {
         //   console.log("up");
         //   break;
       case 39: // right arrow
-        console.log("right");
         switchKeysOff();
         thiz.keyRRotateOn = true;
         game.rightAction();
@@ -84,7 +81,6 @@ SVGView.prototype.setupInput = function() {
   }
 
   window.onload = window.onresize = function() {
-    // console.log(window.innerHeight);
     svg.setAttributeNS(null, "height", window.innerHeight);
   };
 
@@ -133,19 +129,17 @@ SVGView.prototype.draw = function() {
   if (vis == null) {
     vis = document.createElementNS(svgNS, 'image');
     vis.setAttributeNS(null, "id", "shipView");
-    vis.setAttributeNS(null, "x", -353 / 2);
-    vis.setAttributeNS(null, "y", -873 / 2);
-    vis.setAttributeNS(null, "width", 353);
-    vis.setAttributeNS(null, "height", 873);
-    vis.setAttributeNS(null, "transform", "scale(0.15), rotate(90)");
-    console.log("here");
+    vis.setAttributeNS(null, "x", -54 / 2);
+    vis.setAttributeNS(null, "y", -130 / 2);
+    vis.setAttributeNS(null, "width", 54);
+    vis.setAttributeNS(null, "height", 130);
+    // vis.setAttributeNS(null, "transform", "rotate(90)");
     ship.appendChild(vis);
   }
 
   var attr = "xlink:href";
   var attrNS = "http://www.w3.org/1999/xlink"
   if (thiz.keyBoostOn) {
-    console.log('hlla');
     vis.setAttributeNS(attrNS, attr, 'spaceship_B.png');
   } else if (thiz.keyLRotateOn) {
     vis.setAttributeNS(attrNS, attr, 'spaceship_L.png');
@@ -154,7 +148,6 @@ SVGView.prototype.draw = function() {
   } else {
     vis.setAttributeNS(attrNS, attr, 'spaceship.png');
   }
-  console.log('lala');
   let transformation = "translate(" + game.ship.x + "," + game.ship.y + "), " +
     "rotate(" + game.ship.theta + ")"; //"," + game.ship.x + "," + game.ship.y + ")";
 
