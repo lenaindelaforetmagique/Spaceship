@@ -11,7 +11,6 @@ smokeItem = function(xShip) {
   this.x = (Math.random() * 200 - 100) + xShip;
   this.y = 0;
   this.dx = Math.max(-15, Math.min(15, 100 / (this.x - xShip)));
-  console.log(this.dx);
   this.dy = 0 * -Math.random() * 10;
   this.r = 0;
   this.a = 1;
@@ -136,23 +135,54 @@ ShipView = function(ship) {
   this.svg = null;
   this.lastUpdate = Date.now();
 
+  this.pic = null; // normal
+  this.picB = null; // boost
+  this.picL = null; // L rotate
+  this.picR = null; // R rotate
+
   this.createView = function() {
     this.svg = document.createElementNS(svgNS, 'g');
     this.svg.setAttributeNS(null, "id", "ship");
 
-    var pic = document.createElementNS(svgNS, 'image');
-    pic.setAttributeNS(null, "id", "shipView");
-    pic.setAttributeNS(null, "x", -54 / 2);
-    pic.setAttributeNS(null, "y", -130 / 2);
-    pic.setAttributeNS(null, "width", 54);
-    pic.setAttributeNS(null, "height", 130);
-
     let attr = "xlink:href";
     let attrNS = "http://www.w3.org/1999/xlink"
 
-    pic.setAttributeNS(attrNS, attr, 'spaceship.png');
+    this.pic = document.createElementNS(svgNS, 'image');
+    this.pic.setAttributeNS(null, "id", "shipView");
+    this.pic.setAttributeNS(null, "x", -54 / 2);
+    this.pic.setAttributeNS(null, "y", -130 / 2);
+    this.pic.setAttributeNS(null, "width", 54);
+    this.pic.setAttributeNS(null, "height", 130);
+    this.pic.setAttributeNS(attrNS, attr, 'spaceship.png');
+    this.svg.appendChild(this.pic);
 
-    this.svg.appendChild(pic);
+    this.picB = document.createElementNS(svgNS, 'image');
+    this.picB.setAttributeNS(null, "id", "shipViewB");
+    this.picB.setAttributeNS(null, "x", -54 / 2);
+    this.picB.setAttributeNS(null, "y", -130 / 2);
+    this.picB.setAttributeNS(null, "width", 0);
+    this.picB.setAttributeNS(null, "height", 130);
+    this.picB.setAttributeNS(attrNS, attr, 'spaceship_B.png');
+    this.svg.appendChild(this.picB);
+
+    this.picL = document.createElementNS(svgNS, 'image');
+    this.picL.setAttributeNS(null, "id", "shipViewB");
+    this.picL.setAttributeNS(null, "x", -54 / 2);
+    this.picL.setAttributeNS(null, "y", -130 / 2);
+    this.picL.setAttributeNS(null, "width", 0);
+    this.picL.setAttributeNS(null, "height", 130);
+    this.picL.setAttributeNS(attrNS, attr, 'spaceship_L.png');
+    this.svg.appendChild(this.picL);
+
+    this.picR = document.createElementNS(svgNS, 'image');
+    this.picR.setAttributeNS(null, "id", "shipViewB");
+    this.picR.setAttributeNS(null, "x", -54 / 2);
+    this.picR.setAttributeNS(null, "y", -130 / 2);
+    this.picR.setAttributeNS(null, "width", 0);
+    this.picR.setAttributeNS(null, "height", 130);
+    this.picR.setAttributeNS(attrNS, attr, 'spaceship_R.png');
+    this.svg.appendChild(this.picR);
+
   }
 
   this.update = function() {
@@ -181,14 +211,22 @@ ShipView = function(ship) {
     var vis = document.getElementById("shipView");
 
     if (this.BoostOn) {
-      vis.setAttributeNS(attrNS, attr, 'spaceship_B.png');
-    } else if (this.LRotateOnP) {
-      vis.setAttributeNS(attrNS, attr, 'spaceship_L.png');
-    } else if (this.RRotateOnP) {
-      vis.setAttributeNS(attrNS, attr, 'spaceship_R.png');
+      this.picB.setAttributeNS(null, "width", 54);
     } else {
-      vis.setAttributeNS(attrNS, attr, 'spaceship.png');
+      this.picB.setAttributeNS(null, "width", 0);
     }
+    if (this.LRotateOnP) {
+      this.picL.setAttributeNS(null, "width", 54);
+    } else {
+      this.picL.setAttributeNS(null, "width", 0);
+    }
+
+    if (this.RRotateOnP) {
+      this.picR.setAttributeNS(null, "width", 54);
+    } else {
+      this.picR.setAttributeNS(null, "width", 0);
+    }
+
     this.LRotateOnP = false;
     this.RRotateOnP = false;
     let transformation = "translate(" + this.ship.x + "," + this.ship.y + "), " +
