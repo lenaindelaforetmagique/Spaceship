@@ -182,7 +182,6 @@ ShipView = function(ship) {
     this.picR.setAttributeNS(null, "height", 130);
     this.picR.setAttributeNS(attrNS, attr, 'spaceship_R.png');
     this.svg.appendChild(this.picR);
-
   }
 
   this.update = function() {
@@ -267,6 +266,9 @@ SVGView.prototype.createUniverse = function() {
   var thiz = this;
   var svgObj = null;
 
+  let attr = "xlink:href";
+  let attrNS = "http://www.w3.org/1999/xlink"
+
   // SVG picture in HTML
   thiz.svg = document.createElementNS(svgNS, "svg");
   thiz.svg.setAttributeNS(null, "height", thiz.h); //window.innerHeight);
@@ -319,6 +321,19 @@ SVGView.prototype.createUniverse = function() {
   smokeLayerObj.setAttributeNS(null, "id", "smokeLayer");
   thiz.svg.appendChild(smokeLayerObj);
 
+
+  // launchingPad
+
+  svgObj = document.createElementNS(svgNS, 'image');
+  svgObj.setAttributeNS(null, "id", "spaceStation");
+  svgObj.setAttributeNS(null, "x", thiz.game.x_home - 128 / 2 - 15);
+  svgObj.setAttributeNS(null, "y", thiz.game.y_home - 113 / 2);
+  svgObj.setAttributeNS(null, "width", 128);
+  svgObj.setAttributeNS(null, "height", 113);
+  svgObj.setAttributeNS(attrNS, attr, 'launchingPad.png');
+  this.svg.appendChild(svgObj);
+
+
   // ground
   svgObj = document.createElementNS(svgNS, 'rect');
   svgObj.setAttributeNS(null, "id", "horizon");
@@ -328,6 +343,18 @@ SVGView.prototype.createUniverse = function() {
   svgObj.setAttributeNS(null, 'height', thiz.h);
   svgObj.setAttributeNS(null, 'fill', '#000000');
   thiz.svg.appendChild(svgObj);
+
+
+  // Space station
+  svgObj = document.createElementNS(svgNS, 'image');
+  svgObj.setAttributeNS(null, "id", "spaceStation");
+  svgObj.setAttributeNS(null, "x", thiz.game.x_mission - 594 / 2);
+  svgObj.setAttributeNS(null, "y", thiz.game.y_mission - 578 / 2);
+  svgObj.setAttributeNS(null, "width", 594);
+  svgObj.setAttributeNS(null, "height", 578);
+  svgObj.setAttributeNS(attrNS, attr, 'spaceStation.png');
+  this.svg.appendChild(svgObj);
+
 
   // Spaceship
   thiz.ship = new ShipView(thiz.game.ship);
@@ -342,6 +369,20 @@ SVGView.prototype.createUniverse = function() {
     svgObj.appendChild(thiz.cloudsFront[0]);
   }
   thiz.svg.appendChild(svgObj);
+
+
+
+  // mission arrows
+  svgObj = document.createElementNS(svgNS, 'line');
+  svgObj.setAttributeNS(null, "id", "missionArrow");
+  svgObj.setAttributeNS(null, "style", "stroke:rgb(255,0,0);stroke-width:5");
+  thiz.svg.appendChild(svgObj);
+
+  svgObj = document.createElementNS(svgNS, 'line');
+  svgObj.setAttributeNS(null, "id", "homeArrow");
+  svgObj.setAttributeNS(null, "style", "stroke:rgb(0,255,0);stroke-width:5");
+  thiz.svg.appendChild(svgObj);
+
 }
 
 
@@ -429,16 +470,47 @@ SVGView.prototype.draw = function() {
   thiz.svg.setAttributeNS(null, "viewBox", thiz.viewBox.join(" "));
 
   // Background
-  var bg = document.getElementById("background");
-  bg.setAttributeNS(null, 'x', thiz.viewBox[0]);
-  bg.setAttributeNS(null, 'y', thiz.viewBox[1]);
+  var svgObj = document.getElementById("background");
+  svgObj.setAttributeNS(null, 'x', thiz.viewBox[0]);
+  svgObj.setAttributeNS(null, 'y', thiz.viewBox[1]);
   let a = thiz.ship.ship.gravity();
   let col = 'rgb(' + a * 173 + ',' + a * 216 + ',' + a * 230 + ')';
-  bg.setAttributeNS(null, 'fill', col);
+  svgObj.setAttributeNS(null, 'fill', col);
 
 
   this.ship.draw();
   this.smokeGenerator.draw();
+
+  // mission arrows
+  svgObj = document.getElementById("missionArrow");
+  let dx = game.x_mission - this.ship.ship.x;
+  let dy = game.y_mission - this.ship.ship.y;
+  let n = (dx ** 2 + dy ** 2) ** 0.5
+  if (n > 0) {
+    dx /= n;
+    dy /= n;
+  }
+  console.log(n);
+  svgObj.setAttributeNS(null, 'x1', this.ship.ship.x + dx * 100);
+  svgObj.setAttributeNS(null, 'y1', this.ship.ship.y + dy * 100);
+  svgObj.setAttributeNS(null, 'x2', this.ship.ship.x + dx * 100 + dx * n / 250);
+  svgObj.setAttributeNS(null, 'y2', this.ship.ship.y + dy * 100 + dy * n / 250);
+
+
+  svgObj = document.getElementById("homeArrow");
+  dx = game.x_home - this.ship.ship.x;
+  dy = game.y_home - this.ship.ship.y;
+  n = (dx ** 2 + dy ** 2) ** 0.5
+  if (n > 0) {
+    dx /= n;
+    dy /= n;
+  }
+  console.log(n);
+  svgObj.setAttributeNS(null, 'x1', this.ship.ship.x + dx * 100);
+  svgObj.setAttributeNS(null, 'y1', this.ship.ship.y + dy * 100);
+  svgObj.setAttributeNS(null, 'x2', this.ship.ship.x + dx * 100 + dx * n / 250);
+  svgObj.setAttributeNS(null, 'y2', this.ship.ship.y + dy * 100 + dy * n / 250);
+
 }
 
 
