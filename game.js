@@ -63,8 +63,8 @@ Game = function(w, h) {
   this.land = 0 - 48;
   this.x_home = w / 2;
   this.y_home = this.land;
-  this.x_mission = 3 * this.w;
-  this.y_mission = this.spaceLimit;
+  this.x_mission = (-5.5 + 11 * Math.random()) * this.w;
+  this.y_mission = this.spaceLimit * (1.05 + 0.1 * Math.random());
 
   this.ship = new Spaceship(this.x_home, this.y_home, this.spaceLimit, this); //Math.floor(h / 2));
 
@@ -87,7 +87,7 @@ Game = function(w, h) {
     res = test1 && test2 && test3 && test4;
 
     this.ship.landed = res;
-    console.log(this.ship.dx ** 2 + this.ship.dy ** 2);
+    // console.log(this.ship.dx ** 2 + this.ship.dy ** 2);
     // console.log(test1, test2, test3, test4);
     if (this.ship.landed) {
       this.ship.dx = 0;

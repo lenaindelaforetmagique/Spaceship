@@ -323,7 +323,6 @@ SVGView.prototype.createUniverse = function() {
 
 
   // launchingPad
-
   svgObj = document.createElementNS(svgNS, 'image');
   svgObj.setAttributeNS(null, "id", "spaceStation");
   svgObj.setAttributeNS(null, "x", thiz.game.x_home - 128 / 2 - 15);
@@ -490,7 +489,7 @@ SVGView.prototype.draw = function() {
     dx /= n;
     dy /= n;
   }
-  console.log(n);
+  n = Math.max(0, n - 200);
   svgObj.setAttributeNS(null, 'x1', this.ship.ship.x + dx * 100);
   svgObj.setAttributeNS(null, 'y1', this.ship.ship.y + dy * 100);
   svgObj.setAttributeNS(null, 'x2', this.ship.ship.x + dx * 100 + dx * n / 250);
@@ -500,12 +499,12 @@ SVGView.prototype.draw = function() {
   svgObj = document.getElementById("homeArrow");
   dx = game.x_home - this.ship.ship.x;
   dy = game.y_home - this.ship.ship.y;
-  n = (dx ** 2 + dy ** 2) ** 0.5
+  n = (dx ** 2 + dy ** 2) ** 0.5;
   if (n > 0) {
     dx /= n;
     dy /= n;
   }
-  console.log(n);
+  n = Math.max(0, n - 200);
   svgObj.setAttributeNS(null, 'x1', this.ship.ship.x + dx * 100);
   svgObj.setAttributeNS(null, 'y1', this.ship.ship.y + dy * 100);
   svgObj.setAttributeNS(null, 'x2', this.ship.ship.x + dx * 100 + dx * n / 250);
