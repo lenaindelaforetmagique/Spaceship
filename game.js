@@ -9,10 +9,13 @@ principalAngle = function(angle) {
   return res;
 };
 
-Spaceship = function(x, y) {
+Spaceship = function(x, y, spaceLimit) {
   // console.log(x, y);
   this.x = x;
   this.y = y;
+  this.x_origin = x;
+  this.y_origin = y;
+  this.spaceLimit = spaceLimit;
   this.dx = 0;
   this.dy = 0;
   this.theta = 0;
@@ -20,21 +23,25 @@ Spaceship = function(x, y) {
   this.landed = false;
   this.alive = true;
 
-  this.boost = function() {
-    var dv = 1;
+  this.gravity = function() {
+    return Math.max(0, 1 - (this.y / this.spaceLimit) ** 2);
+  }
+
+  this.boostAction = function() {
+    var dv = 1 / 2;
     this.dx += Math.sin(this.theta * Math.PI / 180) * dv;
     this.dy -= Math.cos(this.theta * Math.PI / 180) * dv;
   }
 
-  this.rotate = function(dir) {
+  this.rotateAction = function(dir) {
     var dv = 1; // / 100;
     this.dtheta += dir * dv;
   }
 
-  this.update = function(dt) {
+  this.update = function() {
     if (this.alive) {
       if (!this.landed) {
-        this.dy += 0.1;
+        this.dy += 0.2 * this.gravity();
       } else {
 
         // console.log("landed");
@@ -54,13 +61,14 @@ Spaceship = function(x, y) {
 Game = function(w, h) {
   this.w = w;
   this.h = h;
+  this.spaceLimit = -20 * h;
   this.land = 0 - 48;
-  this.ship = new Spaceship(Math.random() * w, this.land); //Math.floor(h / 2));
+  this.ship = new Spaceship(w / 2, this.land, this.spaceLimit); //Math.floor(h / 2));
 
   // this.html = new SVGView(this);
 
-  this.update = function(dt) {
-    this.ship.update(dt);
+  this.update = function() {
+    this.ship.update();
     this.borderCheck();
     this.checkLanded();
   }
@@ -106,15 +114,5 @@ Game = function(w, h) {
       // this.ship.y -= this.h;
       // this.ship.dy *= -1;
     }
-  }
-
-  this.spaceAction = function() {
-    this.ship.boost();
-  }
-  this.rightAction = function() {
-    this.ship.rotate(1);
-  }
-  this.leftAction = function() {
-    this.ship.rotate(-1);
   }
 };
