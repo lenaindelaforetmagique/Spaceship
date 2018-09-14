@@ -9,10 +9,10 @@ principalAngle = function(angle) {
   return res;
 };
 
-Spaceship = function(x, y, spaceLimit) {
+Spaceship = function(home, spaceLimit) {
   // console.log(x, y);
-  this.x = x;
-  this.y = y;
+  this.x = home.x;
+  this.y = home.y;
   this.spaceLimit = spaceLimit;
   this.dx = 0;
   this.dy = 0;
@@ -55,18 +55,21 @@ Spaceship = function(x, y, spaceLimit) {
   }
 };
 
+Point = function(x, y) {
+  this.x = x;
+  this.y = y;
+}
+
 
 Game = function(w, h) {
   this.w = w;
   this.h = h;
   this.spaceLimit = -20 * h;
   this.land = 0 - 48;
-  this.x_home = w / 2;
-  this.y_home = this.land;
-  this.x_mission = (-5.5 + 11 * Math.random()) * this.w;
-  this.y_mission = this.spaceLimit * (1.05 + 0.1 * Math.random());
+  this.home = new Point(w / 2, this.land);
+  this.mission = new Point((-5.5 + 11 * Math.random()) * this.w, this.spaceLimit * (1.05 + 0.1 * Math.random()));
 
-  this.ship = new Spaceship(this.x_home, this.y_home, this.spaceLimit, this); //Math.floor(h / 2));
+  this.ship = new Spaceship(this.home, this.spaceLimit, this); //Math.floor(h / 2));
 
 
   // this.html = new SVGView(this);
@@ -83,7 +86,7 @@ Game = function(w, h) {
     var test1 = Math.abs(this.ship.y - this.land) < 2; // check altitude
     var test2 = Math.abs(this.ship.theta) < 10; // check verticality (tol =10°)
     var test3 = (this.ship.dy > 0) && (this.ship.dx ** 2 + this.ship.dy ** 2) < 20; // check velocity
-    var test4 = Math.abs(this.ship.dtheta) < 0.1; // check rotational speed
+    var test4 = Math.abs(this.ship.dtheta) < 1.1; // check rotational speed
     res = test1 && test2 && test3 && test4;
 
     this.ship.landed = res;
@@ -93,6 +96,7 @@ Game = function(w, h) {
       this.ship.dx = 0;
       this.ship.dy = 0;
       this.ship.theta = 0;
+      this.ship.dtheta = 0;
       this.ship.y = this.land;
     }
 
