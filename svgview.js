@@ -8,23 +8,25 @@ removeDOMChildren = function(dom) {
 };
 
 
+colorGenerator = function(r = 0, g = 0, b = 0, alpha = 1) {
+  return `rgb(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 
 
 SVGView = function() {
-  this.w = window.innerWidth;
-  this.h = window.innerHeight;
+  this.w = 1000 * 12; //window.innerWidth;
+  this.h = 24 * 1000; //window.innerHeight;
 
-  this.game = new Game(this.w, this.h);
+  this.game = new Game(this.w, this.h); //this.w, this.h);
 
   // components of universe view
   this.svg = null;
-  this.buildings = [];
-  this.cloudsBack = [];
-  this.stars = [];
+
+  // moving items
   this.ship = null;
   this.smokeGenerator = null;
-  this.cloudsFront = [];
-  this.viewBox = [];
+  this.viewBox = null;
   this.instrumentPanel = null;
   this.createUniverse();
 
@@ -43,50 +45,21 @@ SVGView.prototype.createUniverse = function() {
 
   // SVG picture in HTML
   thiz.svg = document.createElementNS(svgNS, "svg");
-  thiz.svg.setAttributeNS(null, "height", thiz.h); //window.innerHeight);
+  // thiz.svg.setAttributeNS(null, "height", thiz.h); //window.innerHeight);
   thiz.svg.setAttributeNS(null, "id", "universe");
   document.body.appendChild(thiz.svg);
 
   // viewBox init
-  thiz.viewBox = [0, -thiz.h + 10, thiz.w, thiz.h];
-  thiz.svg.setAttributeNS(null, "viewBox", thiz.viewBox.join(" "));
-
-  // ceil
-  svgObj = document.createElementNS(svgNS, 'rect');
-  svgObj.setAttributeNS(null, "id", "background");
-  svgObj.setAttributeNS(null, 'x', thiz.viewBox[0]);
-  svgObj.setAttributeNS(null, 'y', thiz.viewBox[1]);
-  svgObj.setAttributeNS(null, 'width', thiz.w);
-  svgObj.setAttributeNS(null, 'height', thiz.h);
-  svgObj.setAttributeNS(null, 'fill', '#ADD8E6'); // linear - gradient(#e66465, #9198e5);
-  thiz.svg.appendChild(svgObj);
+  thiz.viewBox = new ViewBox(thiz.svg, thiz.game.ship);
 
   // Clouds back
-  svgObj = document.createElementNS(svgNS, 'g');
-  svgObj.setAttributeNS(null, "id", "cloudsBack");
-  for (let i = 0; i < 200; i++) {
-    thiz.cloudsBack.unshift(cloudSVG(-thiz.w * 6, thiz.w * 6, -thiz.h * 10, -thiz.h / 2));
-    svgObj.appendChild(thiz.cloudsBack[0]);
-  }
-  thiz.svg.appendChild(svgObj);
+  thiz.svg.appendChild(cloudsGenerator(-thiz.w / 2, thiz.w / 2, -thiz.h / 4, 0, 0.5, 0.5, 200));
 
-  // Stars back
-  svgObj = document.createElementNS(svgNS, 'g');
-  svgObj.setAttributeNS(null, "id", "starsBack");
-  for (let i = 0; i < 1000; i++) {
-    thiz.stars.unshift(starSVG(-thiz.w * 6, thiz.w * 6, thiz.game.spaceLimit * 1.2, thiz.game.spaceLimit * 0.8));
-    svgObj.appendChild(thiz.stars[0]);
-  }
-  thiz.svg.appendChild(svgObj);
+  // Stars
+  thiz.svg.appendChild(starsGenerator(-thiz.w / 2, thiz.w / 2, -thiz.h, -this.h / 3, 2000));
 
   // Buildings
-  svgObj = document.createElementNS(svgNS, 'g');
-  svgObj.setAttributeNS(null, "id", "buildings");
-  for (let i = 0; i < 100; i++) {
-    thiz.buildings.unshift(buildingSVG(-thiz.w * 6, thiz.w * 6));
-    svgObj.appendChild(thiz.buildings[0]);
-  }
-  thiz.svg.appendChild(svgObj);
+  thiz.svg.appendChild(buildingsGenerator(-thiz.w / 2, thiz.w / 2, 100));
 
   // smoke layer
   let smokeLayerObj = document.createElementNS(svgNS, 'g');
@@ -105,17 +78,6 @@ SVGView.prototype.createUniverse = function() {
   this.svg.appendChild(svgObj);
 
 
-  // ground
-  svgObj = document.createElementNS(svgNS, 'rect');
-  svgObj.setAttributeNS(null, "id", "horizon");
-  svgObj.setAttributeNS(null, 'x', -thiz.w * 6);
-  svgObj.setAttributeNS(null, 'y', 0);
-  svgObj.setAttributeNS(null, 'width', thiz.w * 12);
-  svgObj.setAttributeNS(null, 'height', thiz.h);
-  svgObj.setAttributeNS(null, 'fill', '#000000');
-  thiz.svg.appendChild(svgObj);
-
-
   // Space station
   svgObj = document.createElementNS(svgNS, 'image');
   svgObj.setAttributeNS(null, "id", "spaceStation");
@@ -126,24 +88,66 @@ SVGView.prototype.createUniverse = function() {
   svgObj.setAttributeNS(attrNS, attr, 'spaceStation.png');
   this.svg.appendChild(svgObj);
 
-
   // Spaceship
   thiz.ship = new ShipView(thiz.game.ship);
   thiz.svg.appendChild(thiz.ship.svg);
   thiz.smokeGenerator = new smokeGenerator(-200, thiz.ship, smokeLayerObj);
 
-
   // Clouds front
-  svgObj = document.createElementNS(svgNS, 'g');
-  svgObj.setAttributeNS(null, "id", "cloudsBack");
-  for (let i = 0; i < 100; i++) {
-    thiz.cloudsFront.unshift(cloudSVG(-thiz.w * 6, thiz.w * 6, -this.h * 10, -this.h));
-    svgObj.appendChild(thiz.cloudsFront[0]);
-  }
+  thiz.svg.appendChild(cloudsGenerator(-thiz.w / 2, thiz.w / 2, -thiz.h / 4, -this.h / 24, 0.25, 0.25, 200));
+
+
+  // = Universe limit =
+  // ground
+  svgObj = document.createElementNS(svgNS, 'rect');
+  svgObj.setAttributeNS(null, "id", "horizon");
+  svgObj.setAttributeNS(null, 'x', -thiz.w / 2 - window.innerWidth);
+  svgObj.setAttributeNS(null, 'y', 0);
+  svgObj.setAttributeNS(null, 'width', thiz.w + 2 * window.innerWidth);
+  svgObj.setAttributeNS(null, 'height', window.innerHeight / 2);
+  svgObj.setAttributeNS(null, 'fill', '#000000');
   thiz.svg.appendChild(svgObj);
 
+  // topWall
+  svgObj = document.createElementNS(svgNS, 'rect');
+  svgObj.setAttributeNS(null, "id", "topWall");
+  svgObj.setAttributeNS(null, 'x', -thiz.w / 2 - window.innerWidth);
+  svgObj.setAttributeNS(null, 'y', -this.h - window.innerHeight / 2);
+  svgObj.setAttributeNS(null, 'width', thiz.w + 2 * window.innerWidth);
+  svgObj.setAttributeNS(null, 'height', window.innerHeight / 2);
+  svgObj.setAttributeNS(null, 'fill', '#000000');
+  thiz.svg.appendChild(svgObj);
+
+  // leftWall
+  svgObj = document.createElementNS(svgNS, 'rect');
+  svgObj.setAttributeNS(null, "id", "leftWall");
+  svgObj.setAttributeNS(null, 'x', -thiz.w / 2 - window.innerWidth);
+  svgObj.setAttributeNS(null, 'y', -thiz.h);
+  svgObj.setAttributeNS(null, 'width', window.innerWidth);
+  svgObj.setAttributeNS(null, 'height', this.h);
+  svgObj.setAttributeNS(null, 'fill', '#000000');
+  thiz.svg.appendChild(svgObj);
+
+  // rightWall
+  svgObj = document.createElementNS(svgNS, 'rect');
+  svgObj.setAttributeNS(null, "id", "rightWall");
+  svgObj.setAttributeNS(null, 'x', thiz.w / 2);
+  svgObj.setAttributeNS(null, 'y', -thiz.h);
+  svgObj.setAttributeNS(null, 'width', window.innerWidth);
+  svgObj.setAttributeNS(null, 'height', this.h);
+  svgObj.setAttributeNS(null, 'fill', '#000000');
+  thiz.svg.appendChild(svgObj);
+
+  // line
+  var listPts = -this.w / 2 + ", 0 " + -this.w / 2 + "," + -this.h + " " + this.w / 2 + "," + -this.h + " " + this.w / 2 + ",0";
+  svgObj = document.createElementNS(svgNS, 'polyline');
+  svgObj.setAttributeNS(null, "points", listPts);
+  svgObj.setAttributeNS(null, "style", "fill:none;stroke:red;stroke-width:3");
+  thiz.svg.appendChild(svgObj);
+
+
   // instrument Panel
-  thiz.instrumentPanel = new InstrumentPanel(thiz.svg, thiz.game);
+  thiz.instrumentPanel = new InstrumentPanel(thiz.svg, thiz.viewBox, thiz.game);
 }
 
 
@@ -189,6 +193,8 @@ SVGView.prototype.setupInput = function() {
   // window.onload =
   window.onresize = function() {
     // thiz.h = window.innerHeight;
+    thiz.viewBox.resize();
+
     thiz.svg.setAttributeNS(null, "height", window.innerHeight);
   };
 
@@ -216,6 +222,7 @@ SVGView.prototype.refresh = function(ts) {
 SVGView.prototype.update = function() {
   this.game.update();
 
+  this.viewBox.update();
   this.ship.update();
   this.smokeGenerator.update();
   this.instrumentPanel.update();
@@ -226,24 +233,68 @@ SVGView.prototype.draw = function() {
   var game = this.game;
   var thiz = this;
 
-  // adjust viewBox
-  thiz.viewBox[0] = Math.max(Math.min(thiz.viewBox[0], game.ship.x - this.w / 4), game.ship.x + this.w / 4 - this.w);
-  thiz.viewBox[1] = Math.min(-thiz.h + 10, game.ship.y - thiz.h / 2);
-  thiz.svg.setAttributeNS(null, "viewBox", thiz.viewBox.join(" "));
-
-  // Background
-  var svgObj = document.getElementById("background");
-  svgObj.setAttributeNS(null, 'x', thiz.viewBox[0]);
-  svgObj.setAttributeNS(null, 'y', thiz.viewBox[1]);
-  let a = thiz.ship.ship.gravity();
-  let col = 'rgb(' + a * 173 + ',' + a * 216 + ',' + a * 230 + ')';
-  svgObj.setAttributeNS(null, 'fill', col);
-
+  this.viewBox.draw();
   this.ship.draw();
   this.smokeGenerator.draw();
   this.instrumentPanel.draw();
-
 }
+
+ViewBox = function(parentSvg, ship) {
+  this.parentSvg = parentSvg;
+  this.ship = ship;
+
+  this.box = [];
+  this.bg = null;
+
+  this.bgColor = '#ADD8E6';
+
+  this.update = function() {
+    this.box[0] = Math.max(Math.min(this.box[0], this.ship.x - this.box[2] / 4), this.ship.x + this.box[2] / 4 - this.box[2]);
+    this.box[1] = Math.min(-this.box[3] + 10, this.ship.y - this.box[3] / 2);
+
+    let a = this.ship.gravity();
+    this.bgColor = colorGenerator(a * 173, a * 216, a * 230);
+  }
+
+  this.draw = function() {
+    this.parentSvg.setAttributeNS(null, "viewBox", this.box.join(" "));
+
+    // Background
+    this.bg.setAttributeNS(null, 'x', this.box[0]);
+    this.bg.setAttributeNS(null, 'y', this.box[1]);
+    this.bg.setAttributeNS(null, 'width', this.box[2]);
+    this.bg.setAttributeNS(null, 'height', this.box[3]);
+
+    this.bg.setAttributeNS(null, 'fill', this.bgColor);
+
+
+  }
+
+  this.initSVG = function(style) {
+    this.box = [0, 0, window.innerWidth, window.innerHeight];
+
+    // background
+    this.bg = document.createElementNS(svgNS, 'rect');
+    this.bg.setAttributeNS(null, "id", "background");
+
+    this.parentSvg.appendChild(this.bg);
+  }
+
+  this.resize = function() {
+    this.box[2] = window.innerWidth;
+    this.box[3] = window.innerHeight;
+  }
+
+  this.initSVG();
+}
+
+// ========
+
+
+// background
+
+// ========
+
 
 
 var jeu = new SVGView();

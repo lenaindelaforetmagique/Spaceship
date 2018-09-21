@@ -62,12 +62,19 @@ Point = function(x, y) {
 
 
 Game = function(w, h) {
+  // w = total width of game
+  // h = total height of game
   this.w = w;
+  this.xmin = -w / 2;
+  this.xmax = w / 2;
+
   this.h = h;
-  this.spaceLimit = -20 * h;
+  this.ymin = -h;
+
+  this.spaceLimit = -h / 2;
   this.land = 0 - 48;
-  this.home = new Point(w / 2, this.land);
-  this.mission = new Point((-5.5 + 11 * Math.random()) * this.w, this.spaceLimit * (1.05 + 0.1 * Math.random()));
+  this.home = new Point(0, this.land);
+  this.mission = new Point(this.xmin + Math.random() * this.w, this.spaceLimit * (1.05 + 0.1 * Math.random()));
 
   this.ship = new Spaceship(this.home, this.spaceLimit, this); //Math.floor(h / 2));
 
@@ -104,21 +111,26 @@ Game = function(w, h) {
 
   this.borderCheck = function() {
 
-    if (this.ship.x < 0) {
-      // this.ship.alive = false;
-      // this.ship.x += this.w;
-      // this.ship.dx *= -1;
-    } else if (this.ship.x > this.w) {
-      // this.ship.alive = false;
-      // this.ship.x -= this.w;
-      // this.ship.dx *= -1;
+    if (this.ship.x < this.xmin) {
+      this.ship.x = this.xmin + (this.xmin - this.ship.x);
+      this.ship.dx *= -0.2;
+      // this.ship.theta *= -1;
+      this.ship.dtheta *= -1;
+
+    } else if (this.ship.x > this.xmax) {
+      this.ship.x = this.xmax - (this.ship.x - this.xmax);
+      this.ship.dx *= -0.2;
+      // this.ship.theta *= -1;
+      this.ship.dtheta *= -1;
     }
 
-    if (this.ship.y < 0) {
-      // this.ship.alive = false;
-      // this.ship.y += this.h;
-      // this.ship.dy *= -1;
-    } else if (this.ship.y > this.land + 4) {
+    if (this.ship.y < this.ymin) {
+      this.ship.y = this.ymin + (this.ymin - this.ship.y);
+      this.ship.dy *= -1 * 0.2;
+      // this.ship.theta = 180 - this.ship.theta;
+      this.ship.dtheta *= -1;
+
+    } else if (this.ship.y > this.land + 4 && this.ship.y > 0) {
       this.ship.alive = false;
       // this.ship.y -= this.h;
       // this.ship.dy *= -1;

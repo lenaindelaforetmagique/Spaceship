@@ -139,7 +139,7 @@ smokeItem = function(xShip) {
     svgObj.setAttribute('cy', this.y);
     svgObj.setAttribute('rx', this.r);
     svgObj.setAttribute('ry', this.r);
-    svgObj.setAttribute('fill', 'rgb(255, 255, 255,' + this.a + ')');
+    svgObj.setAttribute('fill', colorGenerator(255, 255, 255, this.a));
     return svgObj;
   }
 }

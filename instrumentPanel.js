@@ -41,41 +41,48 @@ Arrow = function(parentSvg, ship, target, style) {
   this.initSVG(style);
 }
 
-// 
-// AltitudeBar = function(ship) {
-//   this.ship = ship;
-//   this.x1 = 10;
-//   this.x2 = 20;
-//
-//   this.update = function() {
-//     this.y1 = this.ship.y;
-//     this.y2 = this.y1;
-//
-//   }
-//
-//   this.draw = function() {
-//
-//     this.svg.setAttributeNS(null, 'y1', this.y1);
-//
-//     this.svg.setAttributeNS(null, 'y2', this.y2);
-//
-//   }
-//
-//   this.initSVG = function() {
-//     this.svg = document.createElementNS(svgNS, 'line');
-//     this.svg.setAttributeNS(null, "style", "stroke:rgb(0,0,255);stroke-width:5");
-//     this.svg.setAttributeNS(null, 'x1', this.x1);
-//     this.svg.setAttributeNS(null, 'x2', this.x2);
-//     this.parentSvg.appendChild(this.svg);
-//   }
-//
-//   this.initSVG(style);
-//
-// }
 
-InstrumentPanel = function(svgView, game) {
+Altimeter = function(parentSvg, viewBox, game) {
+  this.parentSvg = parentSvg;
+  this.viewBox = viewBox;
+  this.totalH = game.h;
+  this.ship = game.ship;
+
+  this.x1 = 0;
+  this.x2 = 0;
+  this.y1 = 0;
+  this.y2 = 0;
+
+  this.svg = null;
+
+  this.update = function() {
+    this.x1 = this.viewBox.box[0];
+    this.x2 = this.x1 + 100;
+    this.y1 = (1 + this.ship.y / this.totalH) * this.viewBox.box[3] + this.viewBox.box[1];
+    this.y2 = this.y1;
+  }
+
+  this.draw = function() {
+    this.svg.setAttributeNS(null, 'x1', this.x1);
+    this.svg.setAttributeNS(null, 'x2', this.x2);
+    this.svg.setAttributeNS(null, 'y1', this.y1);
+    this.svg.setAttributeNS(null, 'y2', this.y2);
+  }
+
+  this.initSVG = function() {
+    this.svg = document.createElementNS(svgNS, 'line');
+    this.svg.setAttributeNS(null, "style", "stroke:rgb(0,0,255);stroke-width:5");
+    this.parentSvg.appendChild(this.svg);
+  }
+
+  this.initSVG();
+
+}
+
+InstrumentPanel = function(parentSvg, viewBox, game) {
   this.game = game;
-  this.parentSvg = svgView;
+  this.parentSvg = parentSvg;
+  this.viewBox = viewBox;
   this.svg = null;
 
   this.svgObjects = [];
@@ -100,7 +107,7 @@ InstrumentPanel = function(svgView, game) {
     // mission arrows
     this.svgObjects.push(new Arrow(this.svg, this.game.ship, this.game.mission, "stroke:rgb(255,0,0);stroke-width:5"));
     this.svgObjects.push(new Arrow(this.svg, this.game.ship, this.game.home, "stroke:rgb(0,255,0);stroke-width:5"));
-
+    this.svgObjects.push(new Altimeter(this.svg, this.viewBox, this.game));
 
     this.parentSvg.appendChild(this.svg);
   }
