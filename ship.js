@@ -14,6 +14,11 @@ ShipView = function(ship) {
   this.picL = null; // L rotate
   this.picR = null; // R rotate
 
+  this.soundB = new Audio('Pink_noise.ogg'); //Audio('boost.mp3');
+  this.soundB.loop = true;
+  this.soundRR = new Audio('psht.mp3');
+  this.soundRL = new Audio('psht.mp3');
+
   this.createView = function() {
     this.svg = document.createElementNS(svgNS, 'g');
     this.svg.setAttributeNS(null, "id", "ship");
@@ -60,19 +65,19 @@ ShipView = function(ship) {
 
   this.update = function() {
     if (this.BoostOn) {
-      this.ship.boostAction();
+      this.ship.boost();
     } else {
-      this.ship.unboostAction();
+      this.ship.unboost();
     };
 
     if (this.LRotateOn) {
-      this.ship.rotateAction(-1);
+      this.ship.rotate(-1);
       this.LRotateOnP = true;
       this.LRotateOn = false;
     }
 
     if (this.RRotateOn) {
-      this.ship.rotateAction(1);
+      this.ship.rotate(1);
       this.RRotateOn = false;
       this.RRotateOnP = true;
     }
@@ -110,11 +115,30 @@ ShipView = function(ship) {
     this.svg.setAttributeNS(null, 'transform', transformation);
   }
 
+  this.boostAction = function() {
+    if (!this.BoostOn) {
+      this.BoostOn = true;
+      this.soundB.play();
+    }
+  }
+  this.unboostAction = function() {
+    this.BoostOn = false;
+    this.soundB.pause();
+  }
+
+  this.RRotateAction = function() {
+    this.RRotateOn = true;
+    this.soundRR.play();
+  }
+
+  this.LRotateAction = function() {
+    this.LRotateOn = true;
+    this.soundRL.play();
+  }
+
   // Init actions
   this.createView();
 }
-
-
 
 
 

@@ -28,7 +28,7 @@ Spaceship = function(home, spaceLimit) {
     return Math.max(0, 1 - Math.pow(this.y / this.spaceLimit, 2));
   }
 
-  this.boostAction = function() {
+  this.boost = function() {
     if (this.dv < 1) {
       this.dv += 0.05; //1 / 2;
     }
@@ -36,11 +36,11 @@ Spaceship = function(home, spaceLimit) {
     this.dy -= Math.cos(this.theta * Math.PI / 180) * this.dv;
   }
 
-  this.unboostAction = function() {
+  this.unboost = function() {
     this.dv = 0;
   }
 
-  this.rotateAction = function(dir) {
+  this.rotate = function(dir) {
     var dv = 1; // / 100;
     this.dtheta += dir * dv;
   }

@@ -6,10 +6,14 @@ listXYToPolylinePoints = function(listX, listY) {
   return res;
 }
 
-Arrow = function(parentSvg, ship, target, style) {
+Arrow = function(parentSvg, ship, target, rr, gg, bb) {
   this.parentSvg = parentSvg;
   this.ship = ship;
   this.target = target;
+  this.rr = rr;
+  this.gg = gg;
+  this.bb = bb;
+  this.alpha = 1;
 
   this.phase = 0;
 
@@ -34,9 +38,9 @@ Arrow = function(parentSvg, ship, target, style) {
     let listy = [];
 
 
-    if (n > 200) {
-
+    if (n > 1) {
       this.phase += Math.max(20 - 10 * n / 1000, 0);
+      this.alpha = Math.max(0, Math.min(1, (n - 100) / 200));
 
       n /= 100;
       n = Math.max(15, n);
@@ -58,7 +62,7 @@ Arrow = function(parentSvg, ship, target, style) {
       // n = ((this.x1 - this.x2) ** 2 + (this.y1 - this.y2) ** 2) ** 0.5;
       n = Math.pow(Math.pow(this.x1 - this.x2, 2) + Math.pow(this.y1 - this.y2, 2), 0.5);
 
-      let a = 4;
+      let a = 5;
 
       let i = 0;
       listx.push(this.x1);
@@ -87,7 +91,6 @@ Arrow = function(parentSvg, ship, target, style) {
       listx.push(listx[i - 1] - dy * a);
       listy.push(listy[i - 1] + dx * a);
 
-
       i += 1;
       listx.push(listx[i - 1] - dx * (n - 2 * a));
       listy.push(listy[i - 1] - dy * (n - 2 * a));
@@ -95,10 +98,7 @@ Arrow = function(parentSvg, ship, target, style) {
       listx.push(this.x1);
       listy.push(this.y1);
     }
-
     this.points = listXYToPolylinePoints(listx, listy);
-
-
   }
 
   this.draw = function() {
@@ -108,15 +108,17 @@ Arrow = function(parentSvg, ship, target, style) {
     // this.svg.setAttributeNS(null, 'y2', this.y2);
 
     this.svg.setAttributeNS(null, 'points', this.points);
+    this.svg.setAttributeNS(null, "style", "fill:" + colorGenerator(this.rr, this.gg, this.bb, this.alpha));
   }
 
-  this.initSVG = function(style) {
+
+  this.initSVG = function() {
     this.svg = document.createElementNS(svgNS, 'polyline');
-    this.svg.setAttributeNS(null, "style", style);
+    // this.svg.setAttributeNS(null, "style", style);
     this.parentSvg.appendChild(this.svg);
   }
 
-  this.initSVG(style);
+  this.initSVG();
 }
 
 
@@ -241,8 +243,8 @@ InstrumentPanel = function(parentSvg, viewBox, game) {
     this.svg.setAttributeNS(null, 'id', 'instrument panel');
 
     // mission arrows
-    this.svgObjects.push(new Arrow(this.svg, this.game.ship, this.game.mission, "stroke:rgb(255,0,0);stroke-width:1;fill:rgb(255,0,0)"));
-    this.svgObjects.push(new Arrow(this.svg, this.game.ship, this.game.home, "stroke:rgb(0,255,0);stroke-width:1;fill:rgb(0,255,0)"));
+    this.svgObjects.push(new Arrow(this.svg, this.game.ship, this.game.mission, 255, 0, 0));
+    this.svgObjects.push(new Arrow(this.svg, this.game.ship, this.game.home, 0, 255, 0));
     this.svgObjects.push(new Radar(this.svg, this.viewBox, this.game));
 
     this.parentSvg.appendChild(this.svg);

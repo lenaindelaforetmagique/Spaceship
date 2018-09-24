@@ -176,25 +176,15 @@ SVGView.prototype.setupInput = function() {
         thiz.game.restart();
         break;
       case 32: // space
-        if (!thiz.ship.BoostOn) {
-          thiz.ship.BoostOn = true;
-          // var audio = new Audio('boost.mp3');
-          // audio.play();
-        }
+        thiz.ship.boostAction();
         break;
       case 37: // left arrow
-        // thiz.ship.ship.rotateAction(-1);
-        // var audio = new Audio('psht.mp3');
-        // audio.play();
-        thiz.ship.LRotateOn = true;
+        thiz.ship.LRotateAction();
         break;
         // case 38: // up arrow
         //   break;
       case 39: // right arrow
-        // thiz.ship.ship.rotateAction(1);
-        // var audio = new Audio('psht.mp3');
-        // audio.play();
-        thiz.ship.RRotateOn = true;
+        thiz.ship.RRotateAction();
         break;
         // case 40: // down arrow
         //   break;
@@ -204,7 +194,8 @@ SVGView.prototype.setupInput = function() {
   document.onkeyup = function(e) {
     switch (e.which) {
       case 32: // space
-        thiz.ship.BoostOn = false;
+        thiz.ship.unboostAction();
+
         break;
     }
   }
@@ -321,7 +312,6 @@ ViewBox = function(parentSvg, ship) {
 
     this.bg.setAttributeNS(null, 'fill', this.bgColor);
 
-
   }
 
   this.initSVG = function(style) {
@@ -342,31 +332,10 @@ ViewBox = function(parentSvg, ship) {
     } else {
       this.box[2] = window.innerWidth * 2;
       this.box[3] = window.innerHeight * 2;
-      //goFullScreen() {
-      var doc = document.documentElement;
-
-      if (doc.requestFullscreen)
-        doc.requestFullscreen();
-      else if (doc.mozRequestFullScreen)
-        doc.mozRequestFullScreen();
-      else if (doc.webkitRequestFullScreen)
-        doc.webkitRequestFullScreen();
-      else if (doc.msRequestFullScreen)
-        doc.msRequestFullScreen();
-
     }
   }
 
   this.initSVG();
 }
-
-// ========
-
-
-// background
-
-// ========
-
-
 
 var jeu = new SVGView();
