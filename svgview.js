@@ -9,7 +9,8 @@ removeDOMChildren = function(dom) {
 
 
 colorGenerator = function(r = 0, g = 0, b = 0, alpha = 1) {
-  return `rgb(${r}, ${g}, ${b}, ${alpha})`;
+  // return `rgb(${r}, ${g}, ${b}, ${alpha})`;
+  return `rgb(${r}, ${g}, ${b})`;
 }
 
 
@@ -53,7 +54,10 @@ SVGView.prototype.Init = function() {
   this.lastUpdate = Date.now();
 
   this.setupInput();
+  this.touchInput();
   this.setupUpdate();
+  console.log(window.navigator.appName);
+
 }
 
 SVGView.prototype.createUniverse = function() {
@@ -220,12 +224,6 @@ SVGView.prototype.setupInput = function() {
       case 32: // space
         thiz.ship.BoostOn = false;
         break;
-        // case 37: // left arrow
-        //   thiz.ship.LRotateOn = false;
-        //   break;
-        // case 39: // right arrow
-        //   thiz.ship.RRotateOn = false;
-        //   break;
     }
   }
 
@@ -237,6 +235,45 @@ SVGView.prototype.setupInput = function() {
     thiz.svg.setAttributeNS(null, "height", window.innerHeight);
   };
 
+};
+
+
+
+SVGView.prototype.touchInput = function() {
+  var dom = this.svg;
+  var thiz = this;
+
+  dom.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+    if (e.touches[0].clientX < window.innerWidth / 4) {
+      thiz.ship.LRotateOn = true;
+    } else if (e.touches[0].clientX < window.innerWidth * 3 / 4) {
+      if (!thiz.ship.BoostOn) {
+        thiz.ship.BoostOn = true;
+      }
+    } else {
+      thiz.ship.RRotateOn = true;
+    }
+  });
+
+  dom.addEventListener("touchmove", function(e) {
+    e.preventDefault();
+  });
+
+  dom.addEventListener("touchend", function(e) {
+    e.preventDefault();
+    if (e.touches[0].clientX < window.innerWidth / 4) {
+      //
+    } else if (e.touches[0].clientX < window.innerWidth * 3 / 4) {
+      thiz.ship.BoostOn = false;
+    } else {
+      //
+    }
+  });
+
+  dom.addEventListener("touchcancel", function(e) {
+    e.preventDefault();
+  });
 };
 
 SVGView.prototype.setupUpdate = function() {

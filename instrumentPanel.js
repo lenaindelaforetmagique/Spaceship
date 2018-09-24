@@ -23,7 +23,8 @@ Arrow = function(parentSvg, ship, target, style) {
   this.update = function() {
     let dx = this.target.x - this.ship.x;
     let dy = this.target.y - this.ship.y;
-    let n = (dx ** 2 + dy ** 2) ** 0.5;
+    // let n = (dx ** 2 + dy ** 2) ** 0.5;
+    let n = Math.pow(dx * dx + dy * dy, 0.5);
     if (n > 0) {
       dx /= n;
       dy /= n;
@@ -54,7 +55,8 @@ Arrow = function(parentSvg, ship, target, style) {
       this.y1 += dy * dl;
       this.x2 += dx * dl;
       this.y2 += dy * dl;
-      n = ((this.x1 - this.x2) ** 2 + (this.y1 - this.y2) ** 2) ** 0.5;
+      // n = ((this.x1 - this.x2) ** 2 + (this.y1 - this.y2) ** 2) ** 0.5;
+      n = Math.pow(Math.pow(this.x1 - this.x2, 2) + Math.pow(this.y1 - this.y2, 2), 0.5);
 
       let a = 4;
 

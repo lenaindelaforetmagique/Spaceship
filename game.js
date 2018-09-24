@@ -24,7 +24,8 @@ Spaceship = function(home, spaceLimit) {
   this.alive = true;
 
   this.gravity = function() {
-    return Math.max(0, 1 - (this.y / this.spaceLimit) ** 2);
+    // return Math.max(0, 1 - (this.y / this.spaceLimit) ** 2);
+    return Math.max(0, 1 - Math.pow(this.y / this.spaceLimit, 2));
   }
 
   this.boostAction = function() {
@@ -116,7 +117,8 @@ Game = function(w, h) {
 
     var test1 = Math.abs(this.ship.y - this.land) < 2; // check altitude
     var test2 = Math.abs(this.ship.theta) < 10; // check verticality (tol =10°)
-    var test3 = (this.ship.dy > 0) && (this.ship.dx ** 2 + this.ship.dy ** 2) < 20; // check velocity
+    // var test3 = (this.ship.dy > 0) && (this.ship.dx ** 2 + this.ship.dy ** 2) < 20; // check velocity
+    var test3 = (this.ship.dy > 0) && (Math.pow(this.ship.dx, 2) + Math.pow(this.ship.dy, 2)) < 20; // check velocity
     var test4 = Math.abs(this.ship.dtheta) < 1.1; // check rotational speed
     res = test1 && test2 && test3 && test4;
 
