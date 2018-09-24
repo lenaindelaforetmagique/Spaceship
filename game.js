@@ -16,6 +16,7 @@ Spaceship = function(home, spaceLimit) {
   this.spaceLimit = spaceLimit;
   this.dx = 0;
   this.dy = 0;
+  this.dv = 0;
   this.theta = 0;
   this.dtheta = 0;
   this.landed = false;
@@ -26,9 +27,15 @@ Spaceship = function(home, spaceLimit) {
   }
 
   this.boostAction = function() {
-    var dv = 1 / 2;
-    this.dx += Math.sin(this.theta * Math.PI / 180) * dv;
-    this.dy -= Math.cos(this.theta * Math.PI / 180) * dv;
+    if (this.dv < 1) {
+      this.dv += 0.05; //1 / 2;
+    }
+    this.dx += Math.sin(this.theta * Math.PI / 180) * this.dv;
+    this.dy -= Math.cos(this.theta * Math.PI / 180) * this.dv;
+  }
+
+  this.unboostAction = function() {
+    this.dv = 0;
   }
 
   this.rotateAction = function(dir) {
@@ -73,8 +80,8 @@ Game = function(w, h) {
 
   this.spaceLimit = -h / 2;
   this.land = 0 - 48;
-  this.home = new Point(0, this.land);
-  this.mission = new Point(this.xmin + Math.random() * this.w, this.spaceLimit * (1.05 + 0.1 * Math.random()));
+  this.home = new Point(this.xmin + Math.random() * this.w, this.land);
+  this.mission = new Point(this.xmin + Math.random() * this.w, this.ymin + Math.random() * h / 2);
 
   this.ship = new Spaceship(this.home, this.spaceLimit, this); //Math.floor(h / 2));
 

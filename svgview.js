@@ -18,6 +18,27 @@ SVGView = function() {
   this.w = 1000 * 12; //window.innerWidth;
   this.h = 24 * 1000; //window.innerHeight;
 
+  this.Init();
+  // this.game = new Game(this.w, this.h); //this.w, this.h);
+  //
+  // // components of universe view
+  // this.svg = null;
+  //
+  // // moving items
+  // this.ship = null;
+  // this.smokeGenerator = null;
+  // this.viewBox = null;
+  // this.instrumentPanel = null;
+  // this.createUniverse();
+  //
+  // this.lastUpdate = Date.now();
+  //
+  // this.setupInput();
+  // this.setupUpdate();
+};
+
+SVGView.prototype.Init = function() {
+  console.log('iiinint');
   this.game = new Game(this.w, this.h); //this.w, this.h);
 
   // components of universe view
@@ -34,7 +55,7 @@ SVGView = function() {
 
   this.setupInput();
   this.setupUpdate();
-};
+}
 
 SVGView.prototype.createUniverse = function() {
   var thiz = this;
@@ -42,6 +63,14 @@ SVGView.prototype.createUniverse = function() {
 
   let attr = "xlink:href";
   let attrNS = "http://www.w3.org/1999/xlink"
+
+  // reset previous universe
+
+  var oldSVG = document.getElementById("universe");
+  if (oldSVG !== null) {
+    oldSVG.parentNode.removeChild(oldSVG);
+  }
+
 
   // SVG picture in HTML
   thiz.svg = document.createElementNS(svgNS, "svg");
@@ -157,18 +186,30 @@ SVGView.prototype.setupInput = function() {
   var thiz = this;
 
   document.onkeydown = function(e) {
+    console.log(e.which);
     switch (e.which) {
+      case 82: // r
+        thiz.Init();
+        break;
       case 32: // space
-        thiz.ship.BoostOn = true;
+        if (!thiz.ship.BoostOn) {
+          thiz.ship.BoostOn = true;
+          // var audio = new Audio('boost.mp3');
+          // audio.play();
+        }
         break;
       case 37: // left arrow
         // thiz.ship.ship.rotateAction(-1);
+        // var audio = new Audio('psht.mp3');
+        // audio.play();
         thiz.ship.LRotateOn = true;
         break;
         // case 38: // up arrow
         //   break;
       case 39: // right arrow
         // thiz.ship.ship.rotateAction(1);
+        // var audio = new Audio('psht.mp3');
+        // audio.play();
         thiz.ship.RRotateOn = true;
         break;
         // case 40: // down arrow

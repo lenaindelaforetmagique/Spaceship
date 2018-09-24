@@ -61,6 +61,8 @@ ShipView = function(ship) {
   this.update = function() {
     if (this.BoostOn) {
       this.ship.boostAction();
+    } else {
+      this.ship.unboostAction();
     };
 
     if (this.LRotateOn) {
