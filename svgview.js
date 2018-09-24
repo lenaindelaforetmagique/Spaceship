@@ -338,9 +338,22 @@ ViewBox = function(parentSvg, ship) {
     if (window.innerWidth > 700) {
       this.box[2] = window.innerWidth;
       this.box[3] = window.innerHeight;
+
     } else {
       this.box[2] = window.innerWidth * 2;
       this.box[3] = window.innerHeight * 2;
+      //goFullScreen() {
+      var doc = document.documentElement;
+
+      if (doc.requestFullscreen)
+        doc.requestFullscreen();
+      else if (doc.mozRequestFullScreen)
+        doc.mozRequestFullScreen();
+      else if (doc.webkitRequestFullScreen)
+        doc.webkitRequestFullScreen();
+      else if (doc.msRequestFullScreen)
+        doc.msRequestFullScreen();
+
     }
   }
 
