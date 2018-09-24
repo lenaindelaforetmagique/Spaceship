@@ -9,8 +9,8 @@ removeDOMChildren = function(dom) {
 
 
 colorGenerator = function(r = 0, g = 0, b = 0, alpha = 1) {
-  // return `rgb(${r}, ${g}, ${b}, ${alpha})`;
-  return `rgb(${r}, ${g}, ${b})`;
+  return `rgba(${Math.floor(r)}, ${Math.floor(g)}, ${Math.floor(b)}, ${alpha})`;
+  // return `rgb(${r}, ${g}, ${b})`;
 }
 
 
@@ -20,22 +20,6 @@ SVGView = function() {
   this.h = 24 * 1000; //window.innerHeight;
 
   this.Init();
-  // this.game = new Game(this.w, this.h); //this.w, this.h);
-  //
-  // // components of universe view
-  // this.svg = null;
-  //
-  // // moving items
-  // this.ship = null;
-  // this.smokeGenerator = null;
-  // this.viewBox = null;
-  // this.instrumentPanel = null;
-  // this.createUniverse();
-  //
-  // this.lastUpdate = Date.now();
-  //
-  // this.setupInput();
-  // this.setupUpdate();
 };
 
 SVGView.prototype.Init = function() {
@@ -56,8 +40,6 @@ SVGView.prototype.Init = function() {
   this.setupInput();
   this.touchInput();
   this.setupUpdate();
-  console.log(window.navigator.appName);
-
 }
 
 SVGView.prototype.createUniverse = function() {
@@ -262,13 +244,9 @@ SVGView.prototype.touchInput = function() {
 
   dom.addEventListener("touchend", function(e) {
     e.preventDefault();
-    if (e.touches[0].clientX < window.innerWidth / 4) {
-      //
-    } else if (e.touches[0].clientX < window.innerWidth * 3 / 4) {
-      thiz.ship.BoostOn = false;
-    } else {
-      //
-    }
+
+    thiz.ship.BoostOn = false;
+
   });
 
   dom.addEventListener("touchcancel", function(e) {
@@ -347,8 +325,8 @@ ViewBox = function(parentSvg, ship) {
   }
 
   this.initSVG = function(style) {
-    this.box = [0, 0, window.innerWidth, window.innerHeight];
-
+    this.box = [0, 0, 0, 0];
+    this.resize();
     // background
     this.bg = document.createElementNS(svgNS, 'rect');
     this.bg.setAttributeNS(null, "id", "background");
@@ -357,8 +335,13 @@ ViewBox = function(parentSvg, ship) {
   }
 
   this.resize = function() {
-    this.box[2] = window.innerWidth;
-    this.box[3] = window.innerHeight;
+    if (window.innerWidth > 700) {
+      this.box[2] = window.innerWidth;
+      this.box[3] = window.innerHeight;
+    } else {
+      this.box[2] = window.innerWidth * 2;
+      this.box[3] = window.innerHeight * 2;
+    }
   }
 
   this.initSVG();
