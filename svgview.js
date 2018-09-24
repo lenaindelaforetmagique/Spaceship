@@ -38,7 +38,6 @@ SVGView = function() {
 };
 
 SVGView.prototype.Init = function() {
-  console.log('iiinint');
   this.game = new Game(this.w, this.h); //this.w, this.h);
 
   // components of universe view
@@ -186,10 +185,9 @@ SVGView.prototype.setupInput = function() {
   var thiz = this;
 
   document.onkeydown = function(e) {
-    console.log(e.which);
     switch (e.which) {
-      case 82: // r
-        thiz.Init();
+      case 78: // n
+        thiz.game.restart();
         break;
       case 32: // space
         if (!thiz.ship.BoostOn) {

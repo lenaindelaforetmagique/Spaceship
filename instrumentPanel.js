@@ -1,12 +1,24 @@
+listXYToPolylinePoints = function(listX, listY) {
+  let res = "";
+  for (let i = 0; i < listX.length; i++) {
+    res += listX[i] + ',' + listY[i] + ' ';
+  }
+  return res;
+}
+
 Arrow = function(parentSvg, ship, target, style) {
   this.parentSvg = parentSvg;
   this.ship = ship;
   this.target = target;
 
+  this.phase = 0;
+
   this.x1 = 0;
   this.y1 = 0;
   this.x2 = 0;
   this.y2 = 0;
+
+  this.points = "";
 
   this.update = function() {
     let dx = this.target.x - this.ship.x;
@@ -16,24 +28,88 @@ Arrow = function(parentSvg, ship, target, style) {
       dx /= n;
       dy /= n;
     }
-    n = Math.max(0, n - 200);
 
-    this.x1 = this.ship.x + dx * 100;
-    this.y1 = this.ship.y + dy * 100;
-    this.x2 = this.ship.x + dx * 100 + dx * n / 250;
-    this.y2 = this.ship.y + dy * 100 + dy * n / 250;
+    let listx = [];
+    let listy = [];
+
+
+    if (n > 200) {
+
+      this.phase += Math.max(20 - 10 * n / 1000, 0);
+
+      n /= 100;
+      n = Math.max(15, n);
+      n = Math.min(100, n);
+      this.x1 = this.ship.x + dx * 100;
+      this.y1 = this.ship.y + dy * 100;
+      this.x2 = this.ship.x + dx * 100 + dx * n;
+      this.y2 = this.ship.y + dy * 100 + dy * n;
+
+      let ampl = 15;
+
+      this.phase = principalAngle(this.phase);
+
+      let dl = ampl * Math.sin(this.phase * Math.PI / 180);
+      this.x1 += dx * dl;
+      this.y1 += dy * dl;
+      this.x2 += dx * dl;
+      this.y2 += dy * dl;
+      n = ((this.x1 - this.x2) ** 2 + (this.y1 - this.y2) ** 2) ** 0.5;
+
+      let a = 4;
+
+      let i = 0;
+      listx.push(this.x1);
+      listy.push(this.y1);
+
+      i += 1;
+      listx.push(listx[i - 1] - dy * a);
+      listy.push(listy[i - 1] + dx * a);
+
+      i += 1;
+      listx.push(listx[i - 1] + dx * (n - 2 * a));
+      listy.push(listy[i - 1] + dy * (n - 2 * a));
+
+      i += 1;
+      listx.push(listx[i - 1] - dy * a);
+      listy.push(listy[i - 1] + dx * a);
+
+      listx.push(this.x2);
+      listy.push(this.y2);
+
+      i += 2;
+      listx.push(listx[i - 1] + dy * 2 * a - dx * 2 * a);
+      listy.push(listy[i - 1] - dx * 2 * a - dy * 2 * a);
+
+      i += 1;
+      listx.push(listx[i - 1] - dy * a);
+      listy.push(listy[i - 1] + dx * a);
+
+
+      i += 1;
+      listx.push(listx[i - 1] - dx * (n - 2 * a));
+      listy.push(listy[i - 1] - dy * (n - 2 * a));
+
+      listx.push(this.x1);
+      listy.push(this.y1);
+    }
+
+    this.points = listXYToPolylinePoints(listx, listy);
+
 
   }
 
   this.draw = function() {
-    this.svg.setAttributeNS(null, 'x1', this.x1);
-    this.svg.setAttributeNS(null, 'y1', this.y1);
-    this.svg.setAttributeNS(null, 'x2', this.x2);
-    this.svg.setAttributeNS(null, 'y2', this.y2);
+    // this.svg.setAttributeNS(null, 'x1', this.x1);
+    // this.svg.setAttributeNS(null, 'y1', this.y1);
+    // this.svg.setAttributeNS(null, 'x2', this.x2);
+    // this.svg.setAttributeNS(null, 'y2', this.y2);
+
+    this.svg.setAttributeNS(null, 'points', this.points);
   }
 
   this.initSVG = function(style) {
-    this.svg = document.createElementNS(svgNS, 'line');
+    this.svg = document.createElementNS(svgNS, 'polyline');
     this.svg.setAttributeNS(null, "style", style);
     this.parentSvg.appendChild(this.svg);
   }
@@ -163,8 +239,8 @@ InstrumentPanel = function(parentSvg, viewBox, game) {
     this.svg.setAttributeNS(null, 'id', 'instrument panel');
 
     // mission arrows
-    this.svgObjects.push(new Arrow(this.svg, this.game.ship, this.game.mission, "stroke:rgb(255,0,0);stroke-width:5"));
-    this.svgObjects.push(new Arrow(this.svg, this.game.ship, this.game.home, "stroke:rgb(0,255,0);stroke-width:5"));
+    this.svgObjects.push(new Arrow(this.svg, this.game.ship, this.game.mission, "stroke:rgb(255,0,0);stroke-width:1;fill:rgb(255,0,0)"));
+    this.svgObjects.push(new Arrow(this.svg, this.game.ship, this.game.home, "stroke:rgb(0,255,0);stroke-width:1;fill:rgb(0,255,0)"));
     this.svgObjects.push(new Radar(this.svg, this.viewBox, this.game));
 
     this.parentSvg.appendChild(this.svg);

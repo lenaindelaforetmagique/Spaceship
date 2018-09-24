@@ -11,6 +11,7 @@ principalAngle = function(angle) {
 
 Spaceship = function(home, spaceLimit) {
   // console.log(x, y);
+  this.home = home;
   this.x = home.x;
   this.y = home.y;
   this.spaceLimit = spaceLimit;
@@ -60,6 +61,18 @@ Spaceship = function(home, spaceLimit) {
       // console.log("mort");
     }
   }
+
+  this.restart = function() {
+    this.x = this.home.x;
+    this.y = this.home.y;
+    this.dx = 0;
+    this.dy = 0;
+    this.dv = 0;
+    this.theta = 0;
+    this.dtheta = 0;
+    this.landed = false;
+    this.alive = true;
+  }
 };
 
 Point = function(x, y) {
@@ -83,8 +96,12 @@ Game = function(w, h) {
   this.home = new Point(this.xmin + Math.random() * this.w, this.land);
   this.mission = new Point(this.xmin + Math.random() * this.w, this.ymin + Math.random() * h / 2);
 
-  this.ship = new Spaceship(this.home, this.spaceLimit, this); //Math.floor(h / 2));
 
+  this.ship = new Spaceship(this.home, this.spaceLimit, this);
+
+  this.restart = function() {
+    this.ship.restart();
+  }
 
   // this.html = new SVGView(this);
 
