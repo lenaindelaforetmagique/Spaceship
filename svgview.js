@@ -67,7 +67,7 @@ SVGView.prototype.createUniverse = function() {
   thiz.viewBox = new ViewBox(thiz.svg, thiz.game.ship);
 
   // Clouds back
-  thiz.svg.appendChild(cloudsGenerator(-thiz.w / 2, thiz.w / 2, -thiz.h / 4, 0, 0.5, 0.5, 200));
+  thiz.svg.appendChild(cloudsGenerator(-thiz.w / 2, thiz.w / 2, -thiz.h / 3, 0, 0.25, 0.25, 200));
 
   // Stars
   thiz.svg.appendChild(starsGenerator(-thiz.w / 2, thiz.w / 2, -thiz.h, -this.h / 3, 2000));
@@ -108,7 +108,7 @@ SVGView.prototype.createUniverse = function() {
   thiz.smokeGenerator = new smokeGenerator(-200, thiz.ship, smokeLayerObj);
 
   // Clouds front
-  thiz.svg.appendChild(cloudsGenerator(-thiz.w / 2, thiz.w / 2, -thiz.h / 4, -this.h / 24, 0.25, 0.25, 200));
+  thiz.svg.appendChild(cloudsGenerator(-thiz.w / 2, thiz.w / 2, -thiz.h / 3, -this.h / 24, 0.25, 0.25, 200));
 
 
   // = Universe limit =

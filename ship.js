@@ -14,7 +14,7 @@ ShipView = function(ship) {
   this.picL = null; // L rotate
   this.picR = null; // R rotate
 
-  this.soundB = new Audio('Pink_noise.ogg'); //Audio('boost.mp3');
+  this.soundB = new Audio('Pink_noise.ogg');
   this.soundB.loop = true;
   this.soundRR = new Audio('psht.mp3');
   this.soundRL = new Audio('psht.mp3');

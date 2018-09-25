@@ -29,7 +29,7 @@ buildingsGenerator = function(xmin, xmax, quantity) {
 cloudSVG = function(xmin, xmax, ymin, ymax, alphaMin, alphaMax) {
   let xbox = xmin + Math.random() * (xmax - xmin);
   let ybox = ymin + Math.random() * (ymax - ymin);
-  let wbox = Math.random() * 300;
+  let wbox = Math.random() * 200 + 100;
   let hbox = wbox * (0.5 + 0.25 * Math.random());
   let alpha = alphaMin + Math.random() * (alphaMax - alphaMin);
 
