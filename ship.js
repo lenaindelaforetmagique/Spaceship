@@ -14,10 +14,10 @@ ShipView = function(ship) {
   this.picL = null; // L rotate
   this.picR = null; // R rotate
 
-  this.soundB = new Audio('Pink_noise.ogg');
-  this.soundB.loop = true;
-  this.soundRR = new Audio('psht.mp3');
-  this.soundRL = new Audio('psht.mp3');
+  // this.soundB = new Audio('Pink_noise.ogg');
+  // this.soundB.loop = true;
+  // this.soundRR = new Audio('psht.mp3');
+  // this.soundRL = new Audio('psht.mp3');
 
   this.createView = function() {
     this.svg = document.createElementNS(svgNS, 'g');
@@ -118,22 +118,22 @@ ShipView = function(ship) {
   this.boostAction = function() {
     if (!this.BoostOn) {
       this.BoostOn = true;
-      this.soundB.play();
+      // this.soundB.play();
     }
   }
   this.unboostAction = function() {
     this.BoostOn = false;
-    this.soundB.pause();
+    // this.soundB.pause();
   }
 
   this.RRotateAction = function() {
     this.RRotateOn = true;
-    this.soundRR.play();
+    // this.soundRR.play();
   }
 
   this.LRotateAction = function() {
     this.LRotateOn = true;
-    this.soundRL.play();
+    // this.soundRL.play();
   }
 
   // Init actions
