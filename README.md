@@ -1,7 +1,7 @@
 # Spaceship
 A Spaceship simulator
 
-**[See it here!](https://lenaindelaforetmagique.github.io/Boids/)**
+**[See it here!](https://lenaindelaforetmagique.github.io/Spaceship/)**
 
 ## Screenshot!
 
