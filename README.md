@@ -1,5 +1,12 @@
 # Spaceship
-Spaceship game
+A Spaceship simulator
+
+**[See it here!](https://lenaindelaforetmagique.github.io/Boids/)**
+
+## Screenshot!
+
+![Screenshot](screenshot.png)
+
 
 ## Controls
 On regular computer:
