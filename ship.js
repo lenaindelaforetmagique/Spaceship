@@ -4,8 +4,12 @@ ShipView = function(ship) {
   this.BoostOn = false;
   this.LRotateOn = false;
   this.RRotateOn = false;
+  this.UMoveOn = false;
+  this.DMoveOn = false;
   this.LRotateOnP = false;
   this.RRotateOnP = false;
+  this.UMoveOnP = false;
+  this.DMoveOnP = false;
   this.svg = null;
   this.lastUpdate = Date.now();
 
@@ -13,6 +17,8 @@ ShipView = function(ship) {
   this.picB = null; // boost
   this.picL = null; // L rotate
   this.picR = null; // R rotate
+  this.picU = null; // U move
+  this.picD = null; // D move
 
   // this.soundB = new Audio('Pink_noise.ogg');
   // this.soundB.loop = true;
@@ -61,6 +67,24 @@ ShipView = function(ship) {
     this.picR.setAttributeNS(null, "height", 130);
     this.picR.setAttributeNS(attrNS, attr, 'spaceship_R.png');
     this.svg.appendChild(this.picR);
+
+    this.picU = document.createElementNS(svgNS, 'image');
+    this.picU.setAttributeNS(null, "id", "shipViewB");
+    this.picU.setAttributeNS(null, "x", -54 / 2);
+    this.picU.setAttributeNS(null, "y", -130 / 2);
+    this.picU.setAttributeNS(null, "width", 0);
+    this.picU.setAttributeNS(null, "height", 130);
+    this.picU.setAttributeNS(attrNS, attr, 'spaceship_U.png');
+    this.svg.appendChild(this.picU);
+
+    this.picD = document.createElementNS(svgNS, 'image');
+    this.picD.setAttributeNS(null, "id", "shipViewB");
+    this.picD.setAttributeNS(null, "x", -54 / 2);
+    this.picD.setAttributeNS(null, "y", -130 / 2);
+    this.picD.setAttributeNS(null, "width", 0);
+    this.picD.setAttributeNS(null, "height", 130);
+    this.picD.setAttributeNS(attrNS, attr, 'spaceship_D.png');
+    this.svg.appendChild(this.picD);
   }
 
   this.update = function() {
@@ -80,6 +104,18 @@ ShipView = function(ship) {
       this.ship.rotate(1);
       this.RRotateOn = false;
       this.RRotateOnP = true;
+    }
+
+    if (this.UMoveOn) {
+      this.ship.move(1);
+      this.UMoveOnP = true;
+      this.UMoveOn = false;
+    }
+
+    if (this.DMoveOn) {
+      this.ship.move(-1);
+      this.DMoveOnP = true;
+      this.DMoveOn = false;
     }
   }
 
@@ -107,8 +143,23 @@ ShipView = function(ship) {
       this.picR.setAttributeNS(null, "width", 0);
     }
 
+    if (this.UMoveOnP) {
+      this.picU.setAttributeNS(null, "width", 54);
+    } else {
+      this.picU.setAttributeNS(null, "width", 0);
+    }
+
+    if (this.DMoveOnP) {
+      this.picD.setAttributeNS(null, "width", 54);
+    } else {
+      this.picD.setAttributeNS(null, "width", 0);
+    }
+
     this.LRotateOnP = false;
     this.RRotateOnP = false;
+    this.UMoveOnP = false;
+    this.DMoveOnP = false;
+
     let transformation = "translate(" + this.ship.x + "," + this.ship.y + "), " +
       "rotate(" + this.ship.theta + ")";
 
@@ -134,6 +185,14 @@ ShipView = function(ship) {
   this.LRotateAction = function() {
     this.LRotateOn = true;
     // this.soundRL.play();
+  }
+
+  this.UMoveAction = function() {
+    this.UMoveOn = true;
+  }
+
+  this.DMoveAction = function() {
+    this.DMoveOn = true;
   }
 
   // Init actions

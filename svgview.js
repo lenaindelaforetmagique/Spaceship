@@ -181,13 +181,15 @@ SVGView.prototype.setupInput = function() {
       case 37: // left arrow
         thiz.ship.LRotateAction();
         break;
-        // case 38: // up arrow
-        //   break;
+      case 38: // up arrow
+        thiz.ship.UMoveAction();
+        break;
       case 39: // right arrow
         thiz.ship.RRotateAction();
         break;
-        // case 40: // down arrow
-        //   break;
+      case 40: // down arrow
+        thiz.ship.DMoveAction();
+        break;
     }
   }
 

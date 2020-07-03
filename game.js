@@ -40,6 +40,12 @@ Spaceship = function(home, spaceLimit) {
     this.dv = 0;
   }
 
+  this.move = function(dir) {
+    let intensity = dir * 0.15;
+    this.dx += Math.sin(this.theta * Math.PI / 180) * intensity;
+    this.dy -= Math.cos(this.theta * Math.PI / 180) * intensity;
+  }
+
   this.rotate = function(dir) {
     var dv = 1; // / 100;
     this.dtheta += dir * dv;

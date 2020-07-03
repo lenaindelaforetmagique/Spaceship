@@ -12,6 +12,7 @@ A Spaceship simulator
 On regular computer:
 * space bar to boost
 * left/right arrow to rotate ccw/cw
+* up/down to move forward/backward
 * n to restart
 
 On tactile devices:
